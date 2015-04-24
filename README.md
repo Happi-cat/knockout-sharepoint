@@ -45,6 +45,9 @@ Component view model receives params object with next properties.
 - value - contains field value
 - additional options that were specified.
 
+View model instance should have getData function, that would be called on form submit for getting new value (if it's a json field you should return JS object that would be converted to string).
+
+If you want to use custom validation you can specify hasErrors. That should return string when field is invalid, otherwise it should return falthy value.
 
 ## Usage
 
