@@ -31,10 +31,10 @@ Options can have next properties:
 
 property name |   | description
 --------------|---|--------------
-fieldInternalName | *required* | SharePoint field internal name
-component         | *required* | registered knockout component name
-json              | *optional* | this boolean option can be used for fields that stores information in JSON format. You can access JS object in component view model constructor by params.value.
-params            | *optional* | you can specify object with additional parameters that should be passed to knockout component. This option can be function (i.e. `function (schema) { return {}; }` ) that receive field schema as an argument and return object with additional parameters.
+fieldInternalName | **required** | SharePoint field internal name
+component         | **required** | registered knockout component name
+json              | **optional** | this boolean option can be used for fields that stores information in JSON format. You can access JS object in component view model constructor by params.value.
+params            | **optional** | you can specify object with additional parameters that should be passed to knockout component. This option can be function (i.e. `function (schema) { return {}; }` ) that receive field schema as an argument and return object with additional parameters.
 
 
 ## Knockout component view model requirements
@@ -64,7 +64,7 @@ Component view model receives params object with next properties.
 
 You should register all knockout components before usage like in example below:
 
-```
+```javascript
 	ko.components.register('my-component', {
 		viewModel: MyComponentViewModel,
 		template: '<span data-bind="text: value"></span>',
@@ -79,7 +79,7 @@ You should register all knockout components before usage like in example below:
 
 You can specify JSLink script with next content:
 
-```
+```javascript
 	koSharepoint.useComponentForField({
 		fieldInternalName: 'FieldInternalName',
 		component: 'my-component',
