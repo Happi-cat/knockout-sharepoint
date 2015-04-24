@@ -29,13 +29,21 @@ If you want to use knockout registered component you should call this methods be
 
 Options can have next properties:
 
-- fieldInternalName - [required] Sharepoint field internal name;
+property name |   | description
+--------------|---|--------------
+fieldInternalName | *required* | SharePoint field internal name
+component         | *required* | registered knockout component name
+json              | *optional* | this boolean option can be used for fields that stores information in JSON format. You can access JS object in component view model constructor by params.value.
+params            | *optional* | you can specify object with additional parameters that should be passed to knockout component. This option can be function (i.e. `function (schema) { return {}; }` ) that receive field schema as an argument and return object with additional parameters.
 
-- component - [required] registered component name;
 
-- json - [optional] this boolean option can be used for fields that stores information in JSON format. You can access JS object in component view model constructor by params.value.
+## Knockout component view model requirements
 
-- params - [optional] you can specify object with additional parametes that should be passed to knockout component. This option also can be function that receive field schema as an argument and return object with additional parameters.
+Component view model receives params object with next properties. 
+- fieldInternalName - fiedl internal name
+- editable - boolean that is set to true for NewForm, EditForm
+- value - contains field value
+- additional options that were specified.
 
 
 ## Usage
@@ -47,6 +55,9 @@ Options can have next properties:
 - knockout
 - jQuery
 - ko-sharepoint 
+
+
+
 
 
 ### Register all knockout components
