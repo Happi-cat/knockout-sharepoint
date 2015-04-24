@@ -1,0 +1,20 @@
+{
+  "curly": true,
+  "eqnull": true,
+  "eqeqeq": true,
+  "undef": true,
+  "globals": {
+	"_": true,
+	"module": true,
+	"require": true,
+	"document": true,
+	"console": true,
+    "jQuery": true,
+	"ko": true,
+	"koSharepoint": true,
+	"SP": true,
+	"SPClientForms": true,
+	"SPClientTemplates": true,
+	"SPFormControl_AppendValidationErrorMessage": true
+  }
+}
