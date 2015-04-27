@@ -139,7 +139,7 @@
 			}, getAdditionalParams(fieldSchema));
 
 			formCtx.registerInitCallback(fieldInternalName, function () {
-				ko.koSharepointlyBindings(paramsViewModel, document.getElementById(controlId));
+				ko.applyBindings(paramsViewModel, document.getElementById(controlId));
 			});
 
 			formCtx.registerGetValueCallback(fieldInternalName, function getValue() {
