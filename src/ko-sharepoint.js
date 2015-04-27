@@ -2,11 +2,12 @@
 	'use strict';
 
 	var koSharepoint = {
-		layoutsFolderUrl: '/_layouts/15/',
+		settings: {
+			layoutsUrl: '/_layouts/15/',
+		},
 		CustomValidators: {},
 		fields: {}
 	};
-
 
 	function getFieldModelInstance(fieldInternalName) {
 		var propName = _.camelCase(fieldInternalName);
@@ -209,7 +210,7 @@
 	var templateFromUrlLoader = {
 		loadTemplate: function loadTemplate(name, templateConfig, callback) {
 			if (templateConfig.fromUrl) {
-				var fullUrl = koSharepoint.layoutsFolderUrl + templateConfig.fromUrl;
+				var fullUrl = koSharepoint.settings.layoutsUrl + templateConfig.fromUrl;
 
 				$.get(fullUrl, function (markupString) {
 					ko.components.defaultLoader.loadTemplate(name, markupString, callback);
