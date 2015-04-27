@@ -4,8 +4,8 @@
 	var koSharepoint = {
 		settings: {
 			layoutsUrl: '/_layouts/15/',
+			VERSION: '1.0.0.0'
 		},
-		CustomValidators: {},
 		fields: {}
 	};
 
@@ -14,8 +14,7 @@
 
 		var viewModel = koSharepoint.fields[propName];
 		if (!viewModel) {
-			console.log('Cannot find model ' + fieldInternalName);
-			return;
+			throw new Error('Cannot find model instance for field' + fieldInternalName);
 		}
 		return viewModel;
 	}
@@ -25,7 +24,7 @@
 		koSharepoint.fields[propName] = model;
 	}
 
-	koSharepoint.CustomValidators.KoErrorsFieldValidator = function KoErrorsFieldValidator(fieldInternalName) {
+	function KoErrorsFieldValidator(fieldInternalName) {
 		var validator = this;
 
 		validator.Validate = function (value) {
@@ -43,9 +42,9 @@
 			}
 			return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
 		};
-	};
+	}
 
-	koSharepoint.CustomValidators.KoRequiredFieldValidator = function KoRequiredFieldValidator(fieldInternalName) {
+	function KoRequiredFieldValidator(fieldInternalName) {
 		var validator = this;
 
 		validator.Validate = function (value) {
@@ -58,7 +57,7 @@
 			}
 			return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
 		};
-	};
+	}
 
 	function parseValue(value, config) {
 		config = config || {};
@@ -100,10 +99,10 @@
 			var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
 
 			if (formCtx.fieldSchema.Required) {
-				fieldValidators.RegisterValidator(new koSharepoint.CustomValidators.KoRequiredFieldValidator(fieldInternalName));
+				fieldValidators.RegisterValidator(new KoRequiredFieldValidator(fieldInternalName));
 			}
 
-			fieldValidators.RegisterValidator(new koSharepoint.CustomValidators.KoErrorsFieldValidator(fieldInternalName));
+			fieldValidators.RegisterValidator(new KoErrorsFieldValidator(fieldInternalName));
 
 			return fieldValidators;
 		}
