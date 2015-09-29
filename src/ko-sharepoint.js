@@ -4,6 +4,7 @@
 	var koSharepoint = {
 		settings: {
 			layoutsUrl: '/_layouts/15/',
+			fileVersion: '$SharePoint.Project.AssemblyFullName$',
 			VERSION: '1.0.0.0'
 		},
 		fields: {}
@@ -83,7 +84,7 @@
 		return value || '';
 	}
 
-	var getComponentHtml = _.template('<${ tag } id="${ id }" params="${ params }"></${ tag }>');
+	var getComponentHtml = _.template('<${ tag } id="${ id }" class="component" params="${ params }"></${ tag }>');
 
 	koSharepoint.useComponentForField = function useComponentForField(config) {
 		config = _.defaults(config, {
@@ -209,7 +210,7 @@
 	var templateFromUrlLoader = {
 		loadTemplate: function loadTemplate(name, templateConfig, callback) {
 			if (templateConfig.fromUrl) {
-				var fullUrl = koSharepoint.settings.layoutsUrl + templateConfig.fromUrl;
+				var fullUrl = koSharepoint.settings.layoutsUrl + templateConfig.fromUrl + '?v=' + koSharepoint.settings.fileVersion;
 
 				$.get(fullUrl, function (markupString) {
 					ko.components.defaultLoader.loadTemplate(name, markupString, callback);
