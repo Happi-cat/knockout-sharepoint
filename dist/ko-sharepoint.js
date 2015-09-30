@@ -2,19 +2,20 @@
 	'use strict';
 
 	var koSharepoint = {
-		layoutsFolderUrl: '/_layouts/15/',
-		CustomValidators: {},
+		settings: {
+			layoutsUrl: '/_layouts/15/',
+			fileVersion: '$SharePoint.Project.AssemblyFullName$',
+			VERSION: '1.0.0.0'
+		},
 		fields: {}
 	};
-
 
 	function getFieldModelInstance(fieldInternalName) {
 		var propName = _.camelCase(fieldInternalName);
 
 		var viewModel = koSharepoint.fields[propName];
 		if (!viewModel) {
-			console.log('Cannot find model ' + fieldInternalName);
-			return;
+			throw new Error('Cannot find model instance for field' + fieldInternalName);
 		}
 		return viewModel;
 	}
@@ -24,7 +25,7 @@
 		koSharepoint.fields[propName] = model;
 	}
 
-	koSharepoint.CustomValidators.KoErrorsFieldValidator = function KoErrorsFieldValidator(fieldInternalName) {
+	function KoErrorsFieldValidator(fieldInternalName) {
 		var validator = this;
 
 		validator.Validate = function (value) {
@@ -42,9 +43,9 @@
 			}
 			return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
 		};
-	};
+	}
 
-	koSharepoint.CustomValidators.KoRequiredFieldValidator = function KoRequiredFieldValidator(fieldInternalName) {
+	function KoRequiredFieldValidator(fieldInternalName) {
 		var validator = this;
 
 		validator.Validate = function (value) {
@@ -57,7 +58,7 @@
 			}
 			return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
 		};
-	};
+	}
 
 	function parseValue(value, config) {
 		config = config || {};
@@ -83,7 +84,7 @@
 		return value || '';
 	}
 
-	var getComponentHtml = _.template('<${ tag } id="${ id }" params="${ params }"></${ tag }>');
+	var getComponentHtml = _.template('<${ tag } id="${ id }" class="component" params="${ params }"></${ tag }>');
 
 	koSharepoint.useComponentForField = function useComponentForField(config) {
 		config = _.defaults(config, {
@@ -99,10 +100,10 @@
 			var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
 
 			if (formCtx.fieldSchema.Required) {
-				fieldValidators.RegisterValidator(new koSharepoint.CustomValidators.KoRequiredFieldValidator(fieldInternalName));
+				fieldValidators.RegisterValidator(new KoRequiredFieldValidator(fieldInternalName));
 			}
 
-			fieldValidators.RegisterValidator(new koSharepoint.CustomValidators.KoErrorsFieldValidator(fieldInternalName));
+			fieldValidators.RegisterValidator(new KoErrorsFieldValidator(fieldInternalName));
 
 			return fieldValidators;
 		}
@@ -139,7 +140,7 @@
 			}, getAdditionalParams(fieldSchema));
 
 			formCtx.registerInitCallback(fieldInternalName, function () {
-				ko.koSharepointlyBindings(paramsViewModel, document.getElementById(controlId));
+				ko.applyBindings(paramsViewModel, document.getElementById(controlId));
 			});
 
 			formCtx.registerGetValueCallback(fieldInternalName, function getValue() {
@@ -209,7 +210,7 @@
 	var templateFromUrlLoader = {
 		loadTemplate: function loadTemplate(name, templateConfig, callback) {
 			if (templateConfig.fromUrl) {
-				var fullUrl = koSharepoint.layoutsFolderUrl + templateConfig.fromUrl;
+				var fullUrl = koSharepoint.settings.layoutsUrl + templateConfig.fromUrl + '?v=' + koSharepoint.settings.fileVersion;
 
 				$.get(fullUrl, function (markupString) {
 					ko.components.defaultLoader.loadTemplate(name, markupString, callback);
