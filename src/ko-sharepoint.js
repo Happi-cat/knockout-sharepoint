@@ -63,15 +63,17 @@
 	function parseValue(value, config) {
 		config = config || {};
 
-		value = value.replace(/<br\s*\/?>/g, '\n');
-		value = value.replace(/<.+?>/g, '');
-		value = _.unescape(value);
-
 		if (config.json) {
 			value = JSON.parse(value || 'null');
 		}
 
 		return value;
+	}
+
+	function preParseNoteFieldValue(value) {
+		value = value.replace(/<br\s*\/?>/g, '\n');
+		value = value.replace(/<.+?>/g, '');
+		return _.unescape(value);
 	}
 
 	function stringifyValue(value, config) {
@@ -132,6 +134,10 @@
 			var formCtx = SPClientTemplates.Utility.GetFormContextForCurrentField(renderCtx);
 			var oldFieldValue = formCtx.fieldValue;
 			var fieldSchema = formCtx.fieldSchema;
+
+			if (!editable && fieldSchema.Type === 'Note') {
+				oldFieldValue = preParseNoteFieldValue(oldFieldValue);
+			}
 
 			var paramsViewModel = _.defaults({
 				fieldInternalName: fieldInternalName,
@@ -210,7 +216,7 @@
 	var templateFromUrlLoader = {
 		loadTemplate: function loadTemplate(name, templateConfig, callback) {
 			if (templateConfig.fromUrl) {
-				var fullUrl = koSharepoint.settings.layoutsUrl + templateConfig.fromUrl + '?v=' + koSharepoint.settings.fileVersion;
+				var fullUrl = koSharepoint.settings.layoutsUrl + templateConfig.fromUrl + '?v=' + encodeURIComponent(koSharepoint.settings.fileVersion);
 
 				$.get(fullUrl, function (markupString) {
 					ko.components.defaultLoader.loadTemplate(name, markupString, callback);
